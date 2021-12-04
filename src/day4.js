@@ -14,6 +14,7 @@ const readCSV = async () => {
   console.log("iteration - " + it);
   console.log(winningBoard);
 
+  //Part1
   unmarkedSum = sumOfUnmarkedNums(winningBoard, numbersCalled.slice(0, it));
 //   console.log("UNMARKED SUM = " + unmarkedSum);
 //   console.log(" Winning num = " + numbersCalled[it - 1]);
@@ -23,6 +24,7 @@ const readCSV = async () => {
     return checkWhenBoardWins(board, numbersCalled);
   });
 
+  //Part2
   console.log("when a board wins");
   console.log(whenAllBoardsWin);
   idx = whenAllBoardsWin.indexOf(Math.max.apply(null, whenAllBoardsWin));
