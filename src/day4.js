@@ -1,5 +1,6 @@
+const { Console } = require("console");
 const fs = require("fs");
-const inputCsv = "./data/day4data.csv"
+const inputCsv = "./data/day4data.csv";
 // const inputCsv = "./data/day4dataTest.csv";
 
 const readCSV = async () => {
@@ -13,10 +14,26 @@ const readCSV = async () => {
   console.log("iteration - " + it);
   console.log(winningBoard);
 
-  unmarkedSum = sumOfUnmarkedNums(winningBoard, numbersCalled.slice(0,it))
-  console.log('UNMARKED SUM = ' +unmarkedSum)
-  console.log(' Winning num = ' + numbersCalled[it-1] )
-  console.log(' Total = ' + numbersCalled[it-1]*unmarkedSum )
+  unmarkedSum = sumOfUnmarkedNums(winningBoard, numbersCalled.slice(0, it));
+//   console.log("UNMARKED SUM = " + unmarkedSum);
+//   console.log(" Winning num = " + numbersCalled[it - 1]);
+//   console.log(" Total = " + numbersCalled[it - 1] * unmarkedSum);
+
+  whenAllBoardsWin = arrBoards.map((board) => {
+    return checkWhenBoardWins(board, numbersCalled);
+  });
+
+  console.log("when a board wins");
+  console.log(whenAllBoardsWin);
+  idx = whenAllBoardsWin.indexOf(Math.max.apply(null, whenAllBoardsWin));
+  console.log(idx)
+  numberscalled2 = numbersCalled.slice(0, whenAllBoardsWin[idx])
+  console.log('numberscalled2 = ' + numberscalled2)
+  unmarkedSumlastboard = sumOfUnmarkedNums(arrBoards[idx], numbersCalled.slice(0, whenAllBoardsWin[idx]));
+  console.log("UNMARKED SUM = " + unmarkedSumlastboard);
+  console.log(" Winning num = " + numbersCalled[whenAllBoardsWin[idx] - 1]);
+  console.log(" Total = " + numbersCalled[whenAllBoardsWin[idx] - 1] * unmarkedSumlastboard);
+
 };
 
 let getAllBoards = (input) => {
@@ -63,7 +80,7 @@ let findFirstWinnerBoard = (numbersCalled, arrBoards) => {
   let winningBoard = "";
   for (let i = 0; i < numbersCalled.length; i++) {
     for (let j = 0; j < arrBoards.length; j++) {
-      isWinner = checkIfWinner(numbersCalled.slice(0, i), arrBoards[j]);
+      let isWinner = checkIfWinner(numbersCalled.slice(0, i), arrBoards[j]);
       if (isWinner) {
         console.log("a winning board?");
         winningBoard = arrBoards[j];
@@ -79,7 +96,7 @@ let iterationWinner = (numbersCalled, arrBoards) => {
   let winningBoard = "";
   for (let i = 0; i < numbersCalled.length; i++) {
     for (let j = 0; j < arrBoards.length; j++) {
-      isWinner = checkIfWinner(numbersCalled.slice(0, i), arrBoards[j]);
+      let isWinner = checkIfWinner(numbersCalled.slice(0, i), arrBoards[j]);
       if (isWinner) {
         console.log("a winning board?");
         winningBoard = i;
@@ -88,22 +105,34 @@ let iterationWinner = (numbersCalled, arrBoards) => {
     }
     if (winningBoard !== "") break;
   }
-  return winningBoard ;
+  return winningBoard;
 };
 
 let sumOfUnmarkedNums = (board, numbersCalled) => {
   let sum = 0;
   board.forEach((row) => {
     let rowNums = row.trim().split(/\ +/);
-    sum += rowNums.reduce( (total, num) => {
-        if (!numbersCalled.includes(num)){
-            return total + parseInt(num)
-        } else {
-            return total
-        }
-    },0 )
+    sum += rowNums.reduce((total, num) => {
+      if (!numbersCalled.includes(num)) {
+        return total + parseInt(num);
+      } else {
+        return total;
+      }
+    }, 0);
   });
-  return sum
+  return sum;
+};
+
+let checkWhenBoardWins = (board, numbersCalled) => {
+  let whenBoardWinsArry = -1;
+  for (let i = 0; i < numbersCalled.length; i++) {
+    let isWinner = checkIfWinner(numbersCalled.slice(0, i), board);
+    if (isWinner) {
+      whenBoardWinsArry = i;
+      break;
+    }
+  }
+  return whenBoardWinsArry;
 };
 
 module.exports = readCSV;
