@@ -1,6 +1,6 @@
 const fs = require("fs");
-// const inputCsv = "./data/day4data.csv"
-const inputCsv = "./data/day4dataTest.csv";
+const inputCsv = "./data/day4data.csv"
+// const inputCsv = "./data/day4dataTest.csv";
 
 const readCSV = async () => {
   console.log("Day 4");
@@ -12,6 +12,11 @@ const readCSV = async () => {
   let it = iterationWinner(numbersCalled, arrBoards);
   console.log("iteration - " + it);
   console.log(winningBoard);
+
+  unmarkedSum = sumOfUnmarkedNums(winningBoard, numbersCalled.slice(0,it))
+  console.log('UNMARKED SUM = ' +unmarkedSum)
+  console.log(' Winning num = ' + numbersCalled[it-1] )
+  console.log(' Total = ' + numbersCalled[it-1]*unmarkedSum )
 };
 
 let getAllBoards = (input) => {
@@ -41,6 +46,16 @@ let checkIfWinner = (numbersCalled, board) => {
   });
 
   //   Check columns
+  for (let col = 0; col < board[0].length; col++) {
+    let colNums = [];
+    board.forEach((row) => {
+      let rowNums = row.trim().split(/\ +/);
+      colNums.push(rowNums[col]);
+    });
+    if (colNums.every((num) => numbersCalled.includes(num))) {
+      bingo = true;
+    }
+  }
   return bingo;
 };
 
@@ -73,7 +88,22 @@ let iterationWinner = (numbersCalled, arrBoards) => {
     }
     if (winningBoard !== "") break;
   }
-  return winningBoard;
+  return winningBoard ;
+};
+
+let sumOfUnmarkedNums = (board, numbersCalled) => {
+  let sum = 0;
+  board.forEach((row) => {
+    let rowNums = row.trim().split(/\ +/);
+    sum += rowNums.reduce( (total, num) => {
+        if (!numbersCalled.includes(num)){
+            return total + parseInt(num)
+        } else {
+            return total
+        }
+    },0 )
+  });
+  return sum
 };
 
 module.exports = readCSV;
